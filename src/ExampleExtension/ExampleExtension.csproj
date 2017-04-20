@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <AssemblyName>ExampleExtension</AssemblyName>
+    <PackageId>ExampleService</PackageId>
+    <Authors>Ivvy</Authors>
+    <Description>An example project that leverages AWS technologies to extend the iVvy platform.</Description>
+    <Company>Ivvy Pty Ltd</Company>
+    <Copyright>Copyright (c) Ivvy Pty Ltd</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Routing" Version="1.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.0.0" />
+
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.1.6" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.0.3" />
+
+    <PackageReference Include="Amazon.Lambda.Core" Version="1.0.0" />
+    <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.0.1" />
+    <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="0.9.0-preview1" />
+    <PackageReference Include="Amazon.Lambda.Logging.AspNetCore" Version="1.0.0" />
+
+    <PackageReference Include="Amazon.Lambda.Tools" Version="1.4.0">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ivvy.API" Version="0.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Amazon.Lambda.Tools" Version="1.4.0" />
+  </ItemGroup>
+
+</Project>

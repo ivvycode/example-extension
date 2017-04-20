@@ -1,0 +1,77 @@
+service: ExampleService
+
+provider:
+  name: aws
+  runtime: dotnetcore1.0
+  region: ${opt:region, self:custom.defaultRegion}
+  stage: ${opt:stage, self:custom.defaultStage}
+  profile: ${self:custom.profiles.${self:provider.stage}}
+  environment:
+    ASPNETCORE_ENVIRONMENT: ${self:provider.stage}
+    CIPHER_PASSPHRASE: ${self:custom.secrets.CIPHER_PASSPHRASE}
+
+package:
+  artifact: bin/release/netcoreapp1.0/publish/deploy-package.zip
+  exclude:
+    - secrets.yml
+
+custom:
+  defaultStage: Development
+  defaultRegion: ap-southeast-2
+  profiles:
+    Development: exampleExtensionDevelopment
+    Production: exampleExtensionProduction
+  secrets: ${file(secrets.yml):${self:provider.stage}}
+
+functions:
+  mvc:
+    handler: ExampleExtension::ExampleExtension.LambdaMvcEntryPoint::FunctionHandlerAsync
+    events:
+      - http:
+          path: "/{proxy+}"
+          method: "ANY"
+  logger:
+    handler: ExampleExtension::ExampleExtension.LambdaLoggerEntryPoint::FunctionHandlerAsync
+    events:
+      - schedule:
+          rate: rate(1 minute)
+          enabled: false
+          input:
+            key1: value1
+            key2: value2
+
+resources:
+  Resources:
+    AccountsDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Account
+        AttributeDefinitions:
+          - AttributeName: Id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: Id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    AccountsDynamoDBIamPolicy:
+      Type: AWS::IAM::Policy
+      DependsOn: AccountsDynamoDbTable
+      Properties:
+        PolicyName: LambdaDynamoDbAccounts
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:Query
+                - dynamodb:Scan
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:DescribeTable
+              Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/Account"
+        Roles:
+          - Ref: IamRoleLambdaExecution
