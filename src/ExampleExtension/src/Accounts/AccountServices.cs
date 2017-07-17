@@ -42,7 +42,12 @@ namespace ExampleExtension.Accounts
             // the account details including the api credentials.
             // It also confirms the request originated from iVVy.
 
-            Extension ext = new Extension(Settings.IvvyExtensionsBaseUrl);
+            Extension ext = new Extension(
+                request.IvvySetupVerifyUrl,
+                request.IvvySetupConfigureUrl,
+                request.IvvyEventSetupVerifyUrl,
+                request.IvvyEventSetupConfigureUrl
+            );
             ResultOrError<VerifySetupResponse> verifyResult =
                 await ext.VerifySetupAsync(request.AccountId, request.SetupKey);
             if (verifyResult.Success) {
@@ -52,6 +57,11 @@ namespace ExampleExtension.Accounts
                     SetupKey = request.SetupKey,
                     ApiKey = verifyResponse.ApiKey,
                     ApiSecret = verifyResponse.ApiSecret,
+                    IvvyApiEndPoint = request.IvvyApiEndPoint,
+                    IvvySetupVerifyUrl = request.IvvySetupVerifyUrl,
+                    IvvySetupConfigureUrl = request.IvvySetupConfigureUrl,
+                    IvvyEventSetupVerifyUrl = request.IvvyEventSetupVerifyUrl,
+                    IvvyEventSetupConfigureUrl = request.IvvyEventSetupConfigureUrl
                 };
                 await AddAccountAsync(account);
                 return account;
@@ -96,7 +106,12 @@ namespace ExampleExtension.Accounts
             if (account.SetupKey == null || account.SetupKey.Trim() == "") {
                 throw new ArgumentException("account does not have a SetupKey value");
             }
-            Extension extension = new Extension(Settings.IvvyExtensionsBaseUrl);
+            Extension extension = new Extension(
+                account.IvvySetupVerifyUrl,
+                account.IvvySetupConfigureUrl,
+                account.IvvyEventSetupVerifyUrl,
+                account.IvvyEventSetupConfigureUrl        
+            );
             ResultOrError<VerifyConfigureResponse> verifyResult = 
                 await extension.ConfigureAsync(account.Id, account.SetupKey);
             if (!verifyResult.Success) {

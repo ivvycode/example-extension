@@ -42,7 +42,7 @@ namespace ExampleExtension.Controllers
                 credentials.Item1,
                 credentials.Item2,
                 Settings.IvvyApiVersion,
-                Settings.IvvyApiBaseUrl
+                (account.IvvyApiEndPoint == null) ? Settings.IvvyApiBaseUrl : account.IvvyApiEndPoint
             );
             Ivvy.ResultOrError<Pong> apiResult = await api.PingAsync();
             if (apiResult.IsSuccess()) {
