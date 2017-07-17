@@ -24,10 +24,13 @@ namespace ExampleExtension.Controllers
         ) : base(settings, logger, accountServices) {}
 
         [HttpGet]
-        public async Task<string> Get([FromQuery] string accountId, [FromQuery] string setupKey)
+        public async Task<string> Get(
+                [FromQuery] string region,
+                [FromQuery] string accountId,
+                [FromQuery] string setupKey)
         {
             // An extension should always verify the account has been setup first.
-            Account account = await AccountServices.FindAccountAsync(accountId, setupKey);
+            Account account = await AccountServices.FindAccountAsync(region, accountId, setupKey);
             if (account == null) {
                 return "ACCOUNT_NOT_FOUND";
             }

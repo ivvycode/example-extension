@@ -53,6 +53,8 @@ namespace ExampleExtension.Accounts
             if (verifyResult.Success) {
                 VerifySetupResponse verifyResponse = verifyResult.Result;
                 Account account = new Account {
+                    Pk = $"{request.Region}:{verifyResponse.AccountId}",
+                    Region = request.Region,
                     Id = verifyResponse.AccountId,
                     SetupKey = request.SetupKey,
                     ApiKey = verifyResponse.ApiKey,
@@ -83,7 +85,9 @@ namespace ExampleExtension.Accounts
             // if it exists. The extension must handle the situation where
             // a client continuously adds/removes the extension to/from their account.
 
-            Account account = await FindAccountAsync(request.AccountId, request.SetupKey);
+            Account account = await FindAccountAsync(
+                request.Region, request.AccountId, request.SetupKey
+            );
             if (account == null) {
                 return false;
             }
@@ -123,9 +127,9 @@ namespace ExampleExtension.Accounts
         /// Looks up a registered client account by its unique
         /// id and setup key.
         /// </summary>
-        public async Task<Account> FindAccountAsync(string id, string setupKey)
+        public async Task<Account> FindAccountAsync(string region, string id, string setupKey)
         {
-            Account account = await Context.LoadAsync<Account>(id);
+            Account account = await Context.LoadAsync<Account>($"{region}:{id}");
             if (account != null && account.SetupKey != setupKey) {
                 account = null;
             }
@@ -138,6 +142,9 @@ namespace ExampleExtension.Accounts
         public async Task AddAccountAsync(Account account)
         {
             // Verify the required account data.
+            if (account.Pk == null || account.Pk.Trim() == "") {
+                throw new ArgumentException("account does not have a Pk value");
+            }
             if (account.Id == null || account.Id.Trim() == "") {
                 throw new ArgumentException("account does not have an Id value");
             }
@@ -165,12 +172,12 @@ namespace ExampleExtension.Accounts
         public async Task DeleteAccountAsync(Account account)
         {
             // Verify the required account data.
-            if (account.Id == null || account.Id.Trim() == "") {
-                throw new ArgumentException("account does not have an Id value");
+            if (account.Pk == null || account.Pk.Trim() == "") {
+                throw new ArgumentException("account does not have a Pk value");
             }
 
             // Delete the account.
-            await Context.DeleteAsync<Account>(account.Id);
+            await Context.DeleteAsync<Account>(account.Pk);
         }
 
         /// <summary>

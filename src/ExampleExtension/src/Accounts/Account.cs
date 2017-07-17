@@ -10,9 +10,19 @@ namespace ExampleExtension.Accounts
     public sealed class Account
     {
         /// <summary>
-        /// The unique id of the account.
+        /// The unique key of an account. Made up of the region and id.
         /// </summary>
         [DynamoDBHashKey]
+        public string Pk { get; set; }
+
+        /// <summary>
+        /// The iVvy application region.
+        /// </summary>
+        public string Region { get; set; }
+
+        /// <summary>
+        /// The unique id of the account in the application region.
+        /// </summary>
         public string Id { get; set; }
 
         /// <summary>

@@ -47,10 +47,10 @@ resources:
       Properties:
         TableName: Account
         AttributeDefinitions:
-          - AttributeName: Id
+          - AttributeName: Pk
             AttributeType: S
         KeySchema:
-          - AttributeName: Id
+          - AttributeName: Pk
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
