@@ -30,7 +30,7 @@ namespace ExampleExtension.Accounts
         /// Looks up a registered client account by its unique
         /// id and setup key.
         /// </summary>
-        Task<Account> FindAccountAsync(string region, string id, string setupKey);
+        Task<Account> FindAccountAsync(string region, string id, string setupKey = null);
 
         /// <summary>
         /// Adds the details of an iVvy client account to a permanent datastore.

@@ -64,5 +64,15 @@ namespace ExampleExtension.Accounts
         /// The url to use to inform iVvy the extension has been configured in the event.
         /// </summary>
         public string IvvyEventSetupConfigureUrl { get; set; }
+
+        /// <summary>
+        /// The url to use to verify the iVvy extension venue setup request.
+        /// </summary>
+        public string IvvyVenueSetupVerifyUrl { get; set; }
+
+        /// <summary>
+        /// The url to use to inform iVvy the extension has been configured in the venue.
+        /// </summary>
+        public string IvvyVenueSetupConfigureUrl { get; set; }
     }
 }

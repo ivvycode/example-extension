@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Amazon.DynamoDBv2;
 using ExampleExtension.Accounts;
+using ExampleExtension.Events;
 
 namespace ExampleExtension
 {
@@ -47,6 +48,7 @@ namespace ExampleExtension
             services.AddAWSService<IAmazonDynamoDB>();
 
             services.AddSingleton<IAccountServices, AccountServices>();
+            services.AddSingleton<IEventServices, EventServices>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

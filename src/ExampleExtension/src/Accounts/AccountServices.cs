@@ -46,7 +46,9 @@ namespace ExampleExtension.Accounts
                 request.IvvySetupVerifyUrl,
                 request.IvvySetupConfigureUrl,
                 request.IvvyEventSetupVerifyUrl,
-                request.IvvyEventSetupConfigureUrl
+                request.IvvyEventSetupConfigureUrl,
+                request.IvvyVenueSetupVerifyUrl,
+                request.IvvyVenueSetupConfigureUrl
             );
             ResultOrError<VerifySetupResponse> verifyResult =
                 await ext.VerifySetupAsync(request.AccountId, request.SetupKey);
@@ -63,7 +65,9 @@ namespace ExampleExtension.Accounts
                     IvvySetupVerifyUrl = request.IvvySetupVerifyUrl,
                     IvvySetupConfigureUrl = request.IvvySetupConfigureUrl,
                     IvvyEventSetupVerifyUrl = request.IvvyEventSetupVerifyUrl,
-                    IvvyEventSetupConfigureUrl = request.IvvyEventSetupConfigureUrl
+                    IvvyEventSetupConfigureUrl = request.IvvyEventSetupConfigureUrl,
+                    IvvyVenueSetupVerifyUrl = request.IvvyVenueSetupVerifyUrl,
+                    IvvyVenueSetupConfigureUrl = request.IvvyVenueSetupConfigureUrl
                 };
                 await AddAccountAsync(account);
                 return account;
@@ -114,7 +118,9 @@ namespace ExampleExtension.Accounts
                 account.IvvySetupVerifyUrl,
                 account.IvvySetupConfigureUrl,
                 account.IvvyEventSetupVerifyUrl,
-                account.IvvyEventSetupConfigureUrl        
+                account.IvvyEventSetupConfigureUrl,
+                account.IvvyVenueSetupVerifyUrl,
+                account.IvvyVenueSetupConfigureUrl
             );
             ResultOrError<VerifyConfigureResponse> verifyResult = 
                 await extension.ConfigureAsync(account.Id, account.SetupKey);
@@ -124,14 +130,15 @@ namespace ExampleExtension.Accounts
         }
 
         /// <summary>
-        /// Looks up a registered client account by its unique
-        /// id and setup key.
+        /// Looks up a registered client account by its unique id and setup key.
         /// </summary>
-        public async Task<Account> FindAccountAsync(string region, string id, string setupKey)
+        public async Task<Account> FindAccountAsync(string region, string id, string setupKey = null)
         {
             Account account = await Context.LoadAsync<Account>($"{region}:{id}");
-            if (account != null && account.SetupKey != setupKey) {
-                account = null;
+            if (account != null && setupKey != null) {
+                if (account.SetupKey != setupKey) {
+                    account = null;
+                }
             }
             return account;
         }
