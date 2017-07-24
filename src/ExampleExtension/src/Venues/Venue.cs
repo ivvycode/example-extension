@@ -1,12 +1,12 @@
 using Amazon.DynamoDBv2.DataModel;
 
-namespace ExampleExtension.Events
+namespace ExampleExtension.Venues
 {
-    [DynamoDBTable("Event")]
-    public sealed class Event
+    [DynamoDBTable("Venue")]
+    public sealed class Venue
     {
         /// <summary>
-        /// The unique key of an event. Made up of the region and id.
+        /// The unique key of a venue. Made up of the region and id.
         /// </summary>
         [DynamoDBHashKey]
         public string Pk { get; set; }
@@ -17,18 +17,18 @@ namespace ExampleExtension.Events
         public string Region { get; set; }
 
         /// <summary>
-        /// The unique id of the event in the application region.
+        /// The unique id of the venue in the application region.
         /// </summary>
         public string Id { get; set; }
 
         /// <summary>
         /// The unique id of the account in the application region
-        /// to which the event belongs.
+        /// to which the venue belongs.
         /// </summary>
         public string AccountId { get; set; }
 
         /// <summary>
-        /// The unique setup key assigned to the extension for the event.
+        /// The unique setup key assigned to the extension for the venue.
         /// </summary>
         public string SetupKey { get; set; }
     }

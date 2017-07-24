@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Amazon.DynamoDBv2;
 using ExampleExtension.Accounts;
 using ExampleExtension.Events;
+using ExampleExtension.Venues;
 
 namespace ExampleExtension
 {
@@ -49,6 +50,7 @@ namespace ExampleExtension
 
             services.AddSingleton<IAccountServices, AccountServices>();
             services.AddSingleton<IEventServices, EventServices>();
+            services.AddSingleton<IVenueServices, VenueServices>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

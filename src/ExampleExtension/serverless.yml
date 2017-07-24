@@ -108,3 +108,36 @@ resources:
               Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/Event"
         Roles:
           - Ref: IamRoleLambdaExecution
+    VenuesDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Venue
+        AttributeDefinitions:
+          - AttributeName: Pk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: Pk
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    VenuesDynamoDBIamPolicy:
+      Type: AWS::IAM::Policy
+      DependsOn: VenuesDynamoDbTable
+      Properties:
+        PolicyName: LambdaDynamoDbVenues
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:Query
+                - dynamodb:Scan
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:DescribeTable
+              Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/Venue"
+        Roles:
+          - Ref: IamRoleLambdaExecution
