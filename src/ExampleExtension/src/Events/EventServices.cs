@@ -8,6 +8,7 @@ using ExampleExtension.Cryptography;
 using ExampleExtension.Accounts;
 using Ivvy.Extensions;
 using Ivvy.Extensions.Setup;
+using Ivvy.Extensions.Unsetup;
 using Ivvy.Extensions.Configure;
 
 namespace ExampleExtension.Events
@@ -74,6 +75,29 @@ namespace ExampleExtension.Events
             else {
                 Logger.LogError($"Setup Error: {verifyResult.ErrorMessage}");
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Unregisters an iVvy client event with the extension.
+        /// </summary>
+        public async Task<bool> UnsetupEvent(EventUnsetupRequest request)
+        {
+            // Always verify the event exists before handling the request.
+            // This confirms the request originated from iVvy.
+            // The following code will delete the event details from DynamoDB
+            // if it exists. The extension must handle the situation where
+            // a client continuously adds/removes the extension to/from their event.
+
+            Event iVvyEvent = await FindEventAsync(
+                request.Region, request.EventId, request.SetupKey
+            );
+            if (iVvyEvent == null) {
+                return false;
+            }
+            else {
+                await DeleteEventAsync(iVvyEvent);
+                return true;
             }
         }
 
@@ -148,6 +172,20 @@ namespace ExampleExtension.Events
 
             // Save the event details.
             await Context.SaveAsync<Event>(iVvyEvent);
+        }
+
+        /// <summary>
+        /// Deletes the details of an iVvy client event from DynamoDB.
+        /// </summary>
+        public async Task DeleteEventAsync(Event iVvyEvent)
+        {
+            // Verify the required event data.
+            if (iVvyEvent.Pk == null || iVvyEvent.Pk.Trim() == "") {
+                throw new ArgumentException("iVvyEvent does not have a Pk value");
+            }
+
+            // Delete the event.
+            await Context.DeleteAsync<Event>(iVvyEvent.Pk);
         }
     }
 }

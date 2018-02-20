@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Ivvy.Extensions.Setup;
+using Ivvy.Extensions.Unsetup;
 
 namespace ExampleExtension.Events
 {
@@ -14,6 +15,11 @@ namespace ExampleExtension.Events
         /// Registers an iVvy client event with the extension.
         /// </summary>
         Task<Event> SetupEvent(EventSetupRequest request);
+
+        /// <summary>
+        /// Unregisters an iVvy client event with the extension.
+        /// </summary>
+        Task<bool> UnsetupEvent(EventUnsetupRequest request);
 
         /// <summary>
         /// Used by the extension to notify iVvy that it has been
@@ -31,5 +37,10 @@ namespace ExampleExtension.Events
         /// Adds the details of an iVvy client event to a permanent datastore.
         /// </summary>
         Task AddEventAsync(Event iVvyEvent);
+
+        /// <summary>
+        /// Deletes the details of an iVvy client event from a permanent datastore.
+        /// </summary>
+        Task DeleteEventAsync(Event iVvyEvent);
     }
 }

@@ -8,6 +8,7 @@ using ExampleExtension.Cryptography;
 using ExampleExtension.Accounts;
 using Ivvy.Extensions;
 using Ivvy.Extensions.Setup;
+using Ivvy.Extensions.Unsetup;
 using Ivvy.Extensions.Configure;
 
 namespace ExampleExtension.Venues
@@ -74,6 +75,29 @@ namespace ExampleExtension.Venues
             else {
                 Logger.LogError($"Setup Error: {verifyResult.ErrorMessage}");
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Unregisters an iVvy client venue with the extension.
+        /// </summary>
+        public async Task<bool> UnsetupVenue(VenueUnsetupRequest request)
+        {
+            // Always verify the venue exists before handling the request.
+            // This confirms the request originated from iVvy.
+            // The following code will delete the venue details from DynamoDB
+            // if it exists. The extension must handle the situation where
+            // a client continuously adds/removes the extension to/from their venue.
+
+            Venue venue = await FindVenueAsync(
+                request.Region, request.VenueId, request.SetupKey
+            );
+            if (venue == null) {
+                return false;
+            }
+            else {
+                await DeleteVenueAsync(venue);
+                return true;
             }
         }
 
@@ -148,6 +172,20 @@ namespace ExampleExtension.Venues
 
             // Save the venue details.
             await Context.SaveAsync<Venue>(venue);
+        }
+
+        /// <summary>
+        /// Deletes the details of an iVvy client venue from DynamoDB.
+        /// </summary>
+        public async Task DeleteVenueAsync(Venue venue)
+        {
+            // Verify the required venue data.
+            if (venue.Pk == null || venue.Pk.Trim() == "") {
+                throw new ArgumentException("venue does not have a Pk value");
+            }
+
+            // Delete the venue.
+            await Context.DeleteAsync<Venue>(venue.Pk);
         }
     }
 }
